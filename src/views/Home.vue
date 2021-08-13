@@ -5,7 +5,7 @@ main
       .form-group
         input.form-control(type="text" v-model="query" placeholder="Buscar la mejor imagen")
   .row
-    .col-md-2
+    SellerImage(v-for="seller in sellers" :seller="seller" )
 
 
 </template>
@@ -15,6 +15,7 @@ import { Component, Vue } from "vue-property-decorator";
 import SellerImage from "@/components/SellerImage";
 import { axiosUnplash } from "@/vue-http";
 import sellersJson from "@/sellers.json";
+import imagesJson from "@/images.json";
 
 @Component({
   components: {
@@ -23,18 +24,28 @@ import sellersJson from "@/sellers.json";
 })
 export default class Home extends Vue {
   query = "";
-  images = [];
+  images = imagesJson.results.map(item => item.urls);
   sellers = sellersJson;
   // mounted(): void {
   //   this.fetchImages();
   // }
+  mounted(): void {
+    this.assingImageToSeller()
+  }
   async fetchImages(): Promise<void> {
-    const response = await axiosUnplash.get("/search/photos", {
+    const {data} = await axiosUnplash.get("/search/photos", {
       params: { query: this.query, per_page: 100 },
     });
-    this.images = response.data;
+    this.images = data.results;
   }
-
-
+  assingImageToSeller(): void {
+    this.sellers.forEach(seller => {
+      const randomNumber = Math.floor(Math.random() * this.images.length);
+      const randomImage = this.images[randomNumber]
+      this.images = this.images.splice(randomNumber, 1)
+      console.log(randomImage)
+      seller.image = randomImage
+    })
+  }
 }
 </script>
