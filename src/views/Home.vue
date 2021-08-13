@@ -12,14 +12,19 @@ main
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import SellerImage from "@/components/SellerImage";
 import { axiosUnplash } from "@/vue-http";
+import sellersJson from "@/sellers.json";
+
 @Component({
   components: {
+    SellerImage
   },
 })
 export default class Home extends Vue {
   query = "";
   images = [];
+  sellers = sellersJson;
   // mounted(): void {
   //   this.fetchImages();
   // }
@@ -30,6 +35,6 @@ export default class Home extends Vue {
     this.images = response.data;
   }
 
-  
+
 }
 </script>
