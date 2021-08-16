@@ -1,14 +1,15 @@
 <template lang="pug">
   .col-md-3
     .image-card
-      img(:src="imageURL")
-      .image-card-seller {{seller.name}}
-      button.btn.btn-primary(v-if="allowLike" @click="addPoints()") Me gusta
+      img(:src="imageURL" loading=lazy)
+      .image-card-foorter
+        .image-card-seller {{seller.name}}
+        button.btn.btn-sm.btn-primary(v-if="allowLike" @click="addPoints()") Me gusta 😍
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
-import { Action, Getter } from "vuex-class";
+import { Action, Getter, State } from "vuex-class";
 
 type imageObjectType = {
   full: string, 
@@ -26,13 +27,13 @@ interface SellerShowInterface {
   status: string;
 }
 
-const pointsReward = 3;
-
 @Component
 export default class SellerImage extends Vue {
+  @State pointsReward;
   @Action("addSellerPoints") addSellerPointAction;
   @Getter raceHasEnded;
   @Prop() seller: SellerShowInterface;
+
   liked = false;
 
   get imageURL(): string {
@@ -48,7 +49,13 @@ export default class SellerImage extends Vue {
 
   addPoints(): void {
     this.liked = true;
-    this.addSellerPointAction({seller: { points: pointsReward, name: this.seller.name, id: this.seller.id }})
+    this.addSellerPointAction({
+      seller: {
+        points: this.pointsReward,
+        name: this.seller.name, 
+        id: this.seller.id 
+      }
+    })
   }
 
 }
@@ -56,6 +63,7 @@ export default class SellerImage extends Vue {
 <style lang="scss">
 .image-card {
   img {
+    border-radius: 5px;
     width: 100%;
   }
 }

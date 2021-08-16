@@ -2,13 +2,15 @@ import axios from "axios";
 
 axios.defaults.headers.common["Content-Type"] = "application/json";
 axios.defaults.headers.common.Accept = "application/json";
-axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
-// const token = "0469b6561106d70834ad";
-// const user = "kapzuba@gmail.com";
+const user = "kapzuba@gmail.com:0469b6561106d70834ad";
+const  creadentials = btoa(`${user}`);
 
 const axiosAlegra = axios.create({
-  baseURL: "https://api.example.com",
+  baseURL: "https://api.alegra.com/api/v1",
+  headers: {
+    Authorization: `Basic ${creadentials}`
+  },
 });
 
 const axiosUnplash = axios.create({

@@ -7,17 +7,22 @@ interface sellerPointInterface {
   id: string;
   points: number;
 }
+
 type State = {
-  sellersPoints: sellerPointInterface[];
+  sellersPoints: sellerPointInterface[],
+  pointsReward: number,
+  winnerPoints: number,
 };
 
 export default new Vuex.Store({
   state: {
-    sellersPoints: []
+    sellersPoints: [],
+    pointsReward: 3,
+    winnerPoints: 20
   },
   getters:{
     checkForWinner: (state) => {
-      return state.sellersPoints.find((seller) => seller.points >= 20)
+      return state.sellersPoints.find((seller) => seller.points >= state.winnerPoints)
     },
     raceHasEnded: (state, getters) => {
       return !isEmpty(getters.checkForWinner)
@@ -27,9 +32,10 @@ export default new Vuex.Store({
     assignPoints(state: State, payload): void {
       const seller = state.sellersPoints.find(seller => seller.id === payload.seller.id)
       if(seller) {
-        seller.points += payload.seller.points
+        seller.points += state.pointsReward
         return
       }
+  
       state.sellersPoints.push(payload.seller)
     }
   },
