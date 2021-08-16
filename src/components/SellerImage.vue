@@ -8,16 +8,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator';
+import { Component, Vue, Prop } from "vue-property-decorator";
 import { Action, Getter, State } from "vuex-class";
 
 type imageObjectType = {
-  full: string, 
-  raw: string, 
-  regular: string, 
-  small:  string, 
-  thumb: string
-}
+  full: string;
+  raw: string;
+  regular: string;
+  small: string;
+  thumb: string;
+};
 
 interface SellerShowInterface {
   id: number;
@@ -29,22 +29,22 @@ interface SellerShowInterface {
 
 @Component
 export default class SellerImage extends Vue {
-  @State pointsReward;
+  @State pointsReward: number;
   @Action("addSellerPoints") addSellerPointAction;
-  @Getter raceHasEnded;
+  @Getter raceHasEnded: boolean;
   @Prop() seller: SellerShowInterface;
 
   liked = false;
 
   get imageURL(): string {
-    if(this.seller.image) {
+    if (this.seller.image) {
       return this.seller.image.regular;
     }
-    return ""
+    return "";
   }
 
   get allowLike(): boolean {
-    return this.liked || this.raceHasEnded ? false : true
+    return this.liked || this.raceHasEnded ? false : true;
   }
 
   addPoints(): void {
@@ -52,12 +52,11 @@ export default class SellerImage extends Vue {
     this.addSellerPointAction({
       seller: {
         points: this.pointsReward,
-        name: this.seller.name, 
-        id: this.seller.id 
-      }
-    })
+        name: this.seller.name,
+        id: this.seller.id,
+      },
+    });
   }
-
 }
 </script>
 <style lang="scss">

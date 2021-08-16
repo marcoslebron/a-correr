@@ -1,6 +1,7 @@
 import Vue from "vue";
-import Vuex, {ActionContext} from "vuex";
+import Vuex, { ActionContext } from "vuex";
 import { isEmpty } from "lodash";
+import { axiosAlegra } from "@/vue-http";
 
 Vue.use(Vuex);
 interface sellerPointInterface {
@@ -9,40 +10,58 @@ interface sellerPointInterface {
 }
 
 type State = {
-  sellersPoints: sellerPointInterface[],
-  pointsReward: number,
-  winnerPoints: number,
+  sellersPoints: sellerPointInterface[];
+  pointsReward: number;
+  winnerPoints: number;
+  invoiceData: Record<string, unknown>;
 };
 
 export default new Vuex.Store({
   state: {
     sellersPoints: [],
     pointsReward: 3,
-    winnerPoints: 20
+    winnerPoints: 20,
+    invoiceData: {},
   },
-  getters:{
-    checkForWinner: (state) => {
-      return state.sellersPoints.find((seller) => seller.points >= state.winnerPoints)
+  getters: {
+    sellerWinner: (state: State): sellerPointInterface | undefined => {
+      return state.sellersPoints.find(
+        (seller) => seller.points >= state.winnerPoints
+      );
     },
-    raceHasEnded: (state, getters) => {
-      return !isEmpty(getters.checkForWinner)
-    }
+    raceHasEnded: (state, getters): boolean => {
+      return !isEmpty(getters.sellerWinner);
+    },
+    totalPoints: (state: State): number => {
+      let total = 0;
+      state.sellersPoints.forEach((seller) => {
+        total += seller.points;
+      });
+      return total;
+    },
   },
   mutations: {
     assignPoints(state: State, payload): void {
-      const seller = state.sellersPoints.find(seller => seller.id === payload.seller.id)
-      if(seller) {
-        seller.points += state.pointsReward
-        return
+      const seller = state.sellersPoints.find(
+        (seller) => seller.id === payload.seller.id
+      );
+      if (seller) {
+        seller.points += state.pointsReward;
+        return;
       }
-  
-      state.sellersPoints.push(payload.seller)
-    }
+
+      state.sellersPoints.push(payload.seller);
+    },
+    assignInvoiceData(state: State, payload): void {
+      state.invoiceData = payload;
+    },
   },
   actions: {
-    addSellerPoints({commit}: ActionContext<State, State>, payload): void {
-      commit("assignPoints", payload)
-    }
+    addSellerPoints({ commit }: ActionContext<State, State>, payload): void {
+      commit("assignPoints", payload);
+    },
+    addInvoiceData({ commit }: ActionContext<State, State>, payload): void {
+      commit("assignInvoiceData", payload);
+    },
   },
-  modules: {},
 });

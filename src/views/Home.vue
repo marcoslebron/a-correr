@@ -8,101 +8,191 @@
             type="text" 
             v-model="query" 
             @key.enter="fetchImages" 
-            placeholder="Buscar la mejor imagen")
+            required
+            placeholder="Buscar imagen")
       .col-md-2
         button.btn.btn-primary(type="submit") Buscar Imagenes
+
   .row.justify-content-md-center
     .col-md-6
+      button(@click="dispatchAlegraInvoice") triger invoice
       SellerProgressBar(
         v-for="sellerCompetitor in sellersPoints" 
         :sellerName="sellerCompetitor.name" 
-        :sellerPoints="sellerCompetitor.points")
+        :sellerPoints="sellerCompetitor.points"
+        :key="sellerCompetitor.id")
+      .d-flex.justify-content-between(v-if="totalPoints")
+        .total-label
+          h4 Puntos de la carrera en Total 
+        .total
+          h4 {{totalPoints}}
   Loading(v-if="loading")
-  .row.mt-5(v-else)
+
+  transition-group(v-else tag="div" class="row" name="list")
     SellerImage(
       v-for="seller in sellers" 
-      :seller="seller" )
-  EmptyMessage(v-if="noImages")
+      :seller="seller"
+      :key="seller.id")
 
+  EmptyMessage(v-if="noImages")
+  
+  Modal(v-if="showWinner" @close="showWinner = false")
+    .content(slot="content")
+      img.trophy-img(src="../assets/images/trophy.png")
+      h5(v-if="sellerWinner") {{sellerWinner.name}}
+      h6 🎉¡¡Ha Ganado la Carrera!!🎉
+      Loading(v-if="loadingCreation")
+        p Generando factura...
+      router-link(to="/invoice") Ver Factura
 </template>
 
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
-import SellerImage from "@/components/SellerImage";
-import SellerProgressBar from "@/components/SellerProgressBar";
+import SellerImage from "@/components/SellerImage.vue";
+import SellerProgressBar from "@/components/SellerProgressBar.vue";
 import { axiosUnplash, axiosAlegra } from "@/vue-http";
-import sellersJson from "@/sellers.json";
-import imagesJson from "@/images.json";
-import { State, Getter } from "vuex-class";
-import EmptyMessage from "@/components/EmptyMessage";
-import Loading from "@/components/Loading";
-import  { AxiosResponse } from "axios";
+import { State, Getter, Action } from "vuex-class";
+import EmptyMessage from "@/components/EmptyMessage.vue";
+import Loading from "@/components/Loading.vue";
+import Modal from "@/components/Modal.vue";
+
+import { AxiosResponse } from "axios";
+import first from "lodash/first";
+import { format } from "date-fns";
+
+interface InvoiceParamsInterface {
+  date: string;
+  dueDate: string;
+  client: string;
+  seller: number;
+  items: Record<string, unknown>[];
+}
 
 @Component({
   components: {
     SellerImage,
     SellerProgressBar,
     EmptyMessage,
-    Loading
+    Loading,
+    Modal,
   },
 })
 export default class Home extends Vue {
   @State sellersPoints;
-  @Getter raceHasEnded;
+  @Getter raceHasEnded!: boolean;
+  @Getter totalPoints!: number;
+  @Getter sellerWinner;
+  @Action addInvoiceData;
 
   query = "";
 
-  images = []
+  images = [];
 
-  sellers = sellersJson;
+  sellers = [];
+
+  client = { id: "" };
+
+  product = { id: "", price: [] };
 
   loading = false;
 
-  // mounted(): void {
-  //   this.fetchImages();
-  // }
+  loadingCreation = false;
 
-  mounted(): void {
-    this.fetchSellers()
+  showWinner = false;
+
+  get dateNow(): string {
+    return format(new Date(), "yyyy-MM-dd");
   }
 
-  fetchImages(): void {
-    this.loading = true;
-    axiosUnplash.get("/search/photos", {
-      params: { query: this.query, per_page: 100 },
-    }).then((response: AxiosResponse) =>  {
-      this.images = response.data.results.map(item => item.urls);;
-      this.fetchSellers().then(() => this.assingImageToSeller())
-      
-    }).finally(() => this.loading = false);
+  get dueDate(): string {
+    return format(new Date(2021, 10, 6), "yyyy-MM-dd");
   }
 
-  async fetchSellers(): Promise<void> {
-    const {data} = await axiosAlegra.get("/sellers");
-    this.sellers = data;
+  get invoiceParams(): InvoiceParamsInterface {
+    return {
+      date: this.dateNow,
+      dueDate: this.dueDate,
+      client: this.client.id,
+      seller: this.sellerWinner.id,
+      items: [
+        {
+          id: this.product.id,
+          price: this.product.price[0].price,
+          quantity: this.totalPoints,
+        },
+      ],
+    };
   }
 
   get noImages(): boolean {
     return this.images.length === 0;
   }
 
+  fetchImages(): void {
+    this.images = [];
+    this.loading = true;
+    axiosUnplash
+      .get("/search/photos", {
+        params: { query: this.query, per_page: 100 },
+      })
+      .then((response: AxiosResponse) => {
+        this.images = response.data.results.map(
+          (item: Record<string, number>) => item.urls
+        );
+        this.fetchSellers().then(() => this.assingImageToSeller());
+      })
+      .finally(() => (this.loading = false));
+  }
+
+  async fetchSellers(): Promise<void> {
+    const { data } = await axiosAlegra.get("/sellers");
+    this.sellers = data;
+  }
+
+  fetchClient(): void {
+    axiosAlegra.get("/contacts").then(({ data }) => {
+      this.client = first(data);
+    });
+  }
+
+  fetchProduct(): void {
+    axiosAlegra.get("/items").then(({ data }) => {
+      this.product = first(data);
+    });
+  }
+
+  createInvoice(): void {
+    this.loadingCreation = true;
+    axiosAlegra
+      .post("/invoices", this.invoiceParams)
+      .then(({ data }: AxiosResponse) => {
+        this.addInvoiceData(data);
+      })
+      .finally(() => {
+        this.loadingCreation = false;
+      });
+  }
+
   assingImageToSeller(): void {
     this.sellers.forEach((seller: Record<string, unknown>, index: number) => {
-      let image = this.images[index]
-      this.$set(seller, 'image', image)
-    })
+      let image = this.images[index];
+      this.$set(seller, "image", image);
+    });
   }
 
   dispatchAlegraInvoice(): void {
-    console.log("dispaching invoice")
+    this.fetchClient();
+    this.fetchProduct();
+    this.showWinner = true;
+    this.createInvoice();
+    console.log("dispaching invoice");
   }
 
-  @Watch("raceHasEnded", {immediate: true})
-  onRaceEnded(val: boolean): void{
+  @Watch("raceHasEnded", { immediate: true })
+  onRaceEnded(val: boolean): void {
     if (val) {
-      this.dispatchAlegraInvoice()
+      this.dispatchAlegraInvoice();
     }
   }
-
 }
 </script>

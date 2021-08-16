@@ -1,30 +1,30 @@
 [
-    {
-        "id": 1,
-        "name": "Juan srl",
-        "identification": null,
-        "observations": "Un vendedor de imagenes",
-        "status": "active"
-    },
-    {
-        "id": 2,
-        "name": "Ignacio srl",
-        "identification": null,
-        "observations": "Un vendedor de imagenes extraordinarias",
-        "status": "active"
-    },
-    {
-        "id": 3,
-        "name": "Computer Images SLR",
-        "identification": null,
-        "observations": "Mas que software Imagenes",
-        "status": "active"
-    },
-    {
-        "id": 4,
-        "name": "Golden Link SRL",
-        "identification": null,
-        "observations": "Images Strategis",
-        "status": "active"
-    }
+  {
+    "id": 1,
+    "name": "Juan srl",
+    "identification": null,
+    "observations": "Un vendedor de imagenes",
+    "status": "active"
+  },
+  {
+    "id": 2,
+    "name": "Ignacio srl",
+    "identification": null,
+    "observations": "Un vendedor de imagenes extraordinarias",
+    "status": "active"
+  },
+  {
+    "id": 3,
+    "name": "Computer Images SLR",
+    "identification": null,
+    "observations": "Mas que software Imagenes",
+    "status": "active"
+  },
+  {
+    "id": 4,
+    "name": "Golden Link SRL",
+    "identification": null,
+    "observations": "Images Strategis",
+    "status": "active"
+  }
 ]

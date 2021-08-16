@@ -4,12 +4,12 @@ axios.defaults.headers.common["Content-Type"] = "application/json";
 axios.defaults.headers.common.Accept = "application/json";
 
 const user = "kapzuba@gmail.com:0469b6561106d70834ad";
-const  creadentials = btoa(`${user}`);
+const creadentials = btoa(`${user}`);
 
 const axiosAlegra = axios.create({
   baseURL: "https://api.alegra.com/api/v1",
   headers: {
-    Authorization: `Basic ${creadentials}`
+    Authorization: `Basic ${creadentials}`,
   },
 });
 
