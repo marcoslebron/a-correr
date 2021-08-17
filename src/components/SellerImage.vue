@@ -48,6 +48,7 @@ export default class SellerImage extends Vue {
 </script>
 <style lang="scss">
 .image-card {
+  margin-bottom: 10px;
   img {
     border-radius: 5px;
     width: 100%;

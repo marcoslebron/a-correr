@@ -4,8 +4,8 @@ transition( name="modal")
     .modal-wrapper
       .modal-container
         slot(name="content")
-      .close-button
-        button.btn.btn-outline-dark.btn-sm(@click="close") Cerrar
+        .close-button.mt-4
+          button.btn.btn-outline-dark.btn-sm(@click="close") Cerrar
 </template>
 
 <script lang="ts">

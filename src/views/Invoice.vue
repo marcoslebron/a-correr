@@ -30,7 +30,7 @@ import { axiosAlegra } from "@/vue-http";
 import { InvoiceShowInterface } from "@/types";
 import Loading from "@/components/Loading.vue";
 import InvoiceItem from "@/components/InvoiceItem.vue";
-
+import { Mutation } from "vuex-class";
 @Component({
   components: {
     Loading,
@@ -39,11 +39,13 @@ import InvoiceItem from "@/components/InvoiceItem.vue";
 })
 export default class InvoiceShow extends Vue {
   @Prop() id: string;
+  @Mutation clearSellersPoints: () => void;
   loading = true;
   invoice: InvoiceShowInterface = { id: "" };
 
   mounted(): void {
     this.fetchInvoice();
+    this.clearSellersPoints();
   }
 
   fetchInvoice(): void {

@@ -37,7 +37,7 @@
 
   EmptyMessage(v-if="noImages")
   
-  Modal(v-if="showWinner" @close="showWinner = false")
+  Modal(v-if="showWinner" @close="closeModal")
     .content(slot="content")
       img.trophy-img(src="../assets/images/trophy.png")
       h5(v-if="sellerWinner") {{sellerWinner.name}}
@@ -52,7 +52,7 @@ import { Component, Vue, Watch } from "vue-property-decorator";
 import SellerImage from "@/components/SellerImage.vue";
 import SellerProgressBar from "@/components/SellerProgressBar.vue";
 import { axiosUnplash, axiosAlegra } from "@/vue-http";
-import { State, Getter } from "vuex-class";
+import { State, Getter, Mutation } from "vuex-class";
 import EmptyMessage from "@/components/EmptyMessage.vue";
 import Loading from "@/components/Loading.vue";
 import Modal from "@/components/Modal.vue";
@@ -79,7 +79,7 @@ export default class Home extends Vue {
   @Getter raceHasEnded!: boolean;
   @Getter totalPoints!: number;
   @Getter sellerWinner!: SellerPointInterface;
-
+  @Mutation clearSellersPoints: () => void;
   query = "";
 
   images = [];
@@ -152,14 +152,14 @@ export default class Home extends Vue {
     this.sellers = data;
   }
 
-  fetchClient(): void {
-    axiosAlegra.get("/contacts").then(({ data }) => {
+  fetchClient(): Promise<void> {
+    return axiosAlegra.get("/contacts").then(({ data }) => {
       this.client = data[0];
     });
   }
 
-  fetchProduct(): void {
-    axiosAlegra.get("/items").then(({ data }) => {
+  fetchProduct(): Promise<void> {
+    return axiosAlegra.get("/items").then(({ data }) => {
       this.product = data[0];
     });
   }
@@ -178,16 +178,19 @@ export default class Home extends Vue {
       .then(({ data }: AxiosResponse) => {
         this.invoiceId = data.id;
       })
+      .catch(({ message }) => {
+        console.error(message);
+      })
       .finally(() => {
         this.loadingCreation = false;
       });
   }
 
-  dispatchAlegraInvoice(): void {
-    this.fetchClient();
-    this.fetchProduct();
+  async dispatchAlegraInvoice(): Promise<void> {
+    await this.fetchClient();
+    await this.fetchProduct();
     this.showWinner = true;
-    this.createInvoice();
+    await this.createInvoice();
   }
 
   @Watch("raceHasEnded", { immediate: true })
@@ -195,6 +198,11 @@ export default class Home extends Vue {
     if (val) {
       this.dispatchAlegraInvoice();
     }
+  }
+
+  closeModal(): void {
+    this.showWinner = false;
+    this.clearSellersPoints();
   }
 }
 </script>

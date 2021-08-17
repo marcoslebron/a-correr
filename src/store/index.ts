@@ -41,6 +41,9 @@ export const mutations = <MutationTree<State>>{
 
     state.sellersPoints.push(payload.seller);
   },
+  clearSellersPoints(state: State): void {
+    state.sellersPoints = [];
+  },
 };
 
 export const actions = {
