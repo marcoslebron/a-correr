@@ -1,7 +1,6 @@
 import Vue from "vue";
 import Vuex, { ActionContext } from "vuex";
 import { isEmpty } from "lodash";
-import { axiosAlegra } from "@/vue-http";
 
 Vue.use(Vuex);
 interface sellerPointInterface {
@@ -13,7 +12,6 @@ type State = {
   sellersPoints: sellerPointInterface[];
   pointsReward: number;
   winnerPoints: number;
-  invoiceData: Record<string, unknown>;
 };
 
 export default new Vuex.Store({
@@ -21,7 +19,6 @@ export default new Vuex.Store({
     sellersPoints: [],
     pointsReward: 3,
     winnerPoints: 20,
-    invoiceData: {},
   },
   getters: {
     sellerWinner: (state: State): sellerPointInterface | undefined => {
@@ -52,16 +49,10 @@ export default new Vuex.Store({
 
       state.sellersPoints.push(payload.seller);
     },
-    assignInvoiceData(state: State, payload): void {
-      state.invoiceData = payload;
-    },
   },
   actions: {
     addSellerPoints({ commit }: ActionContext<State, State>, payload): void {
       commit("assignPoints", payload);
-    },
-    addInvoiceData({ commit }: ActionContext<State, State>, payload): void {
-      commit("assignInvoiceData", payload);
     },
   },
 });

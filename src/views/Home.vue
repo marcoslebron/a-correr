@@ -15,17 +15,18 @@
 
   .row.justify-content-md-center
     .col-md-6
-      button(@click="dispatchAlegraInvoice") triger invoice
       SellerProgressBar(
         v-for="sellerCompetitor in sellersPoints" 
         :sellerName="sellerCompetitor.name" 
         :sellerPoints="sellerCompetitor.points"
         :key="sellerCompetitor.id")
+      
       .d-flex.justify-content-between(v-if="totalPoints")
         .total-label
           h4 Puntos de la carrera en Total 
         .total
           h4 {{totalPoints}}
+
   Loading(v-if="loading")
 
   transition-group(v-else tag="div" class="row" name="list")
@@ -55,18 +56,10 @@ import { State, Getter, Action } from "vuex-class";
 import EmptyMessage from "@/components/EmptyMessage.vue";
 import Loading from "@/components/Loading.vue";
 import Modal from "@/components/Modal.vue";
-
+import { InvoiceParamsInterface, SellerPointInterface } from "@/types";
 import { AxiosResponse } from "axios";
 import first from "lodash/first";
 import { format } from "date-fns";
-
-interface InvoiceParamsInterface {
-  date: string;
-  dueDate: string;
-  client: string;
-  seller: number;
-  items: Record<string, unknown>[];
-}
 
 @Component({
   components: {
@@ -78,11 +71,10 @@ interface InvoiceParamsInterface {
   },
 })
 export default class Home extends Vue {
-  @State sellersPoints;
+  @State sellersPoints!: SellerPointInterface[];
   @Getter raceHasEnded!: boolean;
   @Getter totalPoints!: number;
-  @Getter sellerWinner;
-  @Action addInvoiceData;
+  @Getter sellerWinner!: SellerPointInterface;
 
   query = "";
 
@@ -99,6 +91,8 @@ export default class Home extends Vue {
   loadingCreation = false;
 
   showWinner = false;
+
+  invoiceId = "";
 
   get dateNow(): string {
     return format(new Date(), "yyyy-MM-dd");
@@ -166,7 +160,7 @@ export default class Home extends Vue {
     axiosAlegra
       .post("/invoices", this.invoiceParams)
       .then(({ data }: AxiosResponse) => {
-        this.addInvoiceData(data);
+        this.invoiceId = data.id;
       })
       .finally(() => {
         this.loadingCreation = false;
@@ -185,7 +179,6 @@ export default class Home extends Vue {
     this.fetchProduct();
     this.showWinner = true;
     this.createInvoice();
-    console.log("dispaching invoice");
   }
 
   @Watch("raceHasEnded", { immediate: true })

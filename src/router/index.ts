@@ -11,10 +11,11 @@ const routes: Array<RouteConfig> = [
     component: Home,
   },
   {
-    path: "/invoice",
+    path: "/invoice/:id",
     name: "Invoice",
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/Invoice.vue"),
+    props: true,
   },
 ];
 
