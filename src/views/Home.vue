@@ -12,6 +12,7 @@
             placeholder="Buscar imagen")
       .col-md-2
         button.btn.btn-primary(type="submit") Buscar Imagenes
+  router-link(:to="{name: 'Invoice', params: { id: invoiceId }}") Ver Factura
 
   .row.justify-content-md-center.mt-3
     .col-md-6
@@ -101,7 +102,7 @@ export default class Home extends Vue {
 
   showWinner = false;
 
-  invoiceId = "";
+  invoiceId = "1";
 
   get dateNow(): string {
     return format(new Date(), "yyyy-MM-dd");
