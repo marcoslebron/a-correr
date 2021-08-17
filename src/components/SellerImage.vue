@@ -2,7 +2,7 @@
   .col-md-3
     .image-card
       img(:src="imageURL" loading=lazy)
-      .image-card-foorter
+      .image-card-foorter.mb-2
         .image-card-seller {{seller.name}}
         button.btn.btn-sm.btn-primary(v-if="allowLike" @click="addPoints()") Me gusta 😍
 </template>
@@ -10,28 +10,14 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Action, Getter, State } from "vuex-class";
-import { SellerPointInterface } from "@/types";
-
-type imageObjectType = {
-  full: string;
-  raw: string;
-  regular: string;
-  small: string;
-  thumb: string;
-};
-
-interface SellerShowInterface {
-  id: string;
-  name: string;
-  image: imageObjectType;
-  observations: string;
-  status: string;
-}
+import { SellerPointInterface, SellerShowInterface } from "@/types";
 
 @Component
 export default class SellerImage extends Vue {
   @State pointsReward: number;
-  @Action("addSellerPoints") addSellerPointAction: (data: { seller: SellerPointInterface }) => void;
+  @Action("addSellerPoints") addSellerPointAction: (data: {
+    seller: SellerPointInterface;
+  }) => void;
   @Getter raceHasEnded: boolean;
   @Prop() seller: SellerShowInterface;
 

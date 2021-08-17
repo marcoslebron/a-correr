@@ -10,14 +10,14 @@
             .col-md-6
               .client 
                 h4 Cliente
-                .content.d-flex
+                .content.d-flex(v-if="invoice.client")
                   span Nombre:&nbsp;
                   span {{invoice.client.name}}
 
             .col-md-6
               .seller
                 h4 Vendedor: 
-                .content.d-flex
+                .content.d-flex(v-if="invoice.seller")
                   span Nombre:&nbsp;
                   span {{invoice.seller.name}}
             .col-md-12
@@ -40,7 +40,7 @@ import InvoiceItem from "@/components/InvoiceItem.vue";
 export default class InvoiceShow extends Vue {
   @Prop() id: string;
   loading = true;
-  invoice: InvoiceShowInterface = {id: ""};
+  invoice: InvoiceShowInterface = { id: "" };
 
   mounted(): void {
     this.fetchInvoice();

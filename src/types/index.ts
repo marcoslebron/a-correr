@@ -16,6 +16,22 @@ export interface SellerPointInterface {
   points: number;
 }
 
+type imageObjectType = {
+  full: string;
+  raw: string;
+  regular: string;
+  small: string;
+  thumb: string;
+};
+
+export interface SellerShowInterface {
+  id: string;
+  name: string;
+  image: imageObjectType;
+  observations: string;
+  status: string;
+}
+
 export interface ClientInterface {
   id: string;
   name: string;
@@ -25,5 +41,12 @@ export interface ProductInterface {
   id: string;
   name: string;
   quantity: number;
-  price: { price: number }[]
+  price: { price: number }[];
 }
+
+export type State = {
+  sellersPoints: SellerPointInterface[];
+  pointsReward: number;
+  winnerPoints: number;
+  // sellerWinner(): SellerPointInterface;
+};

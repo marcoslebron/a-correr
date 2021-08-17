@@ -44,7 +44,7 @@
       h6 🎉¡¡Ha Ganado la Carrera!!🎉
       Loading(v-if="loadingCreation")
         p Generando factura...
-      router-link(:to="{name: 'invoice', params: { id: invoiceId }}") Ver Factura
+      router-link(:to="{name: 'Invoice', params: { id: invoiceId }}") Ver Factura
 </template>
 
 <script lang="ts">
@@ -56,7 +56,12 @@ import { State, Getter } from "vuex-class";
 import EmptyMessage from "@/components/EmptyMessage.vue";
 import Loading from "@/components/Loading.vue";
 import Modal from "@/components/Modal.vue";
-import { InvoiceParamsInterface, SellerPointInterface, ClientInterface, ProductInterface } from "@/types";
+import {
+  InvoiceParamsInterface,
+  SellerPointInterface,
+  ClientInterface,
+  ProductInterface,
+} from "@/types";
 import { AxiosResponse } from "axios";
 import { format } from "date-fns";
 
@@ -81,9 +86,14 @@ export default class Home extends Vue {
 
   sellers = [];
 
-  client: ClientInterface = {id: "", name: ""};
+  client: ClientInterface = { id: "", name: "" };
 
-  product: ProductInterface = {id: "", name: "", quantity: 0, price: [{ price: 0}]};
+  product: ProductInterface = {
+    id: "",
+    name: "",
+    quantity: 0,
+    price: [{ price: 0 }],
+  };
 
   loading = false;
 
