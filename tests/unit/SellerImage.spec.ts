@@ -26,7 +26,7 @@ describe("SellerImage.vue", () => {
     wrapper = mount(SellerImage, {
       localVue,
       store,
-      propsData: { seller, liked: false },
+      propsData: { seller },
     });
   });
 
@@ -48,7 +48,7 @@ describe("SellerImage.vue", () => {
     wrapper.find("button").trigger("click");
 
     await wrapper.vm.$nextTick();
-    console.log(wrapper.vm);
-    expect(wrapper.find("button")).toBe(false);
+
+    expect(wrapper.find("button").exists()).toBe(false);
   });
 });

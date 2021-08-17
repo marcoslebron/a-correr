@@ -4,7 +4,8 @@ transition( name="modal")
     .modal-wrapper
       .modal-container
         slot(name="content")
-        button.btn.btn-outline-dark(@click="close") Cerrar
+      .close-button
+        button.btn.btn-outline-dark.btn-sm(@click="close") Cerrar
 </template>
 
 <script lang="ts">
@@ -50,6 +51,9 @@ export default class Modal extends Vue {
           max-width: 180px;
         }
       }
+    }
+    .close-button {
+      text-align: center;
     }
   }
 }

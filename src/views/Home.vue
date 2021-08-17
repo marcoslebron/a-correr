@@ -12,7 +12,6 @@
             placeholder="Buscar imagen")
       .col-md-2
         button.btn.btn-primary(type="submit") Buscar Imagenes
-  router-link(:to="{name: 'Invoice', params: { id: invoiceId }}") Ver Factura
 
   .row.justify-content-md-center.mt-3
     .col-md-6
@@ -165,6 +164,13 @@ export default class Home extends Vue {
     });
   }
 
+  assingImageToSeller(): void {
+    this.sellers.forEach((seller: Record<string, unknown>, index: number) => {
+      let image = this.images[index];
+      this.$set(seller, "image", image);
+    });
+  }
+
   createInvoice(): void {
     this.loadingCreation = true;
     axiosAlegra
@@ -175,13 +181,6 @@ export default class Home extends Vue {
       .finally(() => {
         this.loadingCreation = false;
       });
-  }
-
-  assingImageToSeller(): void {
-    this.sellers.forEach((seller: Record<string, unknown>, index: number) => {
-      let image = this.images[index];
-      this.$set(seller, "image", image);
-    });
   }
 
   dispatchAlegraInvoice(): void {
