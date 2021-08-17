@@ -13,9 +13,10 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+import { ProductInterface } from "@/types";
 
 @Component
 export default class InvoiceItem extends Vue {
-  @Prop() item;
+  @Prop() item: ProductInterface;
 }
 </script>

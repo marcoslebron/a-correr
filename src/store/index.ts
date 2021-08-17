@@ -5,6 +5,7 @@ import { isEmpty } from "lodash";
 Vue.use(Vuex);
 interface sellerPointInterface {
   id: string;
+  name: string;
   points: number;
 }
 

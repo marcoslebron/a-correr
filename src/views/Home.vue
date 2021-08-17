@@ -44,7 +44,7 @@
       h6 🎉¡¡Ha Ganado la Carrera!!🎉
       Loading(v-if="loadingCreation")
         p Generando factura...
-      router-link(to="/invoice") Ver Factura
+      router-link(:to="{name: 'invoice', params: { id: invoiceId }}") Ver Factura
 </template>
 
 <script lang="ts">
@@ -52,13 +52,12 @@ import { Component, Vue, Watch } from "vue-property-decorator";
 import SellerImage from "@/components/SellerImage.vue";
 import SellerProgressBar from "@/components/SellerProgressBar.vue";
 import { axiosUnplash, axiosAlegra } from "@/vue-http";
-import { State, Getter, Action } from "vuex-class";
+import { State, Getter } from "vuex-class";
 import EmptyMessage from "@/components/EmptyMessage.vue";
 import Loading from "@/components/Loading.vue";
 import Modal from "@/components/Modal.vue";
-import { InvoiceParamsInterface, SellerPointInterface } from "@/types";
+import { InvoiceParamsInterface, SellerPointInterface, ClientInterface, ProductInterface } from "@/types";
 import { AxiosResponse } from "axios";
-import first from "lodash/first";
 import { format } from "date-fns";
 
 @Component({
@@ -82,9 +81,9 @@ export default class Home extends Vue {
 
   sellers = [];
 
-  client = { id: "" };
+  client: ClientInterface = {id: "", name: ""};
 
-  product = { id: "", price: [] };
+  product: ProductInterface = {id: "", name: "", quantity: 0, price: [{ price: 0}]};
 
   loading = false;
 
@@ -106,12 +105,12 @@ export default class Home extends Vue {
     return {
       date: this.dateNow,
       dueDate: this.dueDate,
-      client: this.client.id,
+      client: this.client?.id,
       seller: this.sellerWinner.id,
       items: [
         {
-          id: this.product.id,
-          price: this.product.price[0].price,
+          id: this.product?.id,
+          price: this.product?.price[0].price,
           quantity: this.totalPoints,
         },
       ],
@@ -145,13 +144,13 @@ export default class Home extends Vue {
 
   fetchClient(): void {
     axiosAlegra.get("/contacts").then(({ data }) => {
-      this.client = first(data);
+      this.client = data[0];
     });
   }
 
   fetchProduct(): void {
     axiosAlegra.get("/items").then(({ data }) => {
-      this.product = first(data);
+      this.product = data[0];
     });
   }
 

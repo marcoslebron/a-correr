@@ -27,7 +27,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { axiosAlegra } from "@/vue-http";
-import InvoiceShowInterface from "@/types";
+import { InvoiceShowInterface } from "@/types";
 import Loading from "@/components/Loading.vue";
 import InvoiceItem from "@/components/InvoiceItem.vue";
 
@@ -40,7 +40,7 @@ import InvoiceItem from "@/components/InvoiceItem.vue";
 export default class InvoiceShow extends Vue {
   @Prop() id: string;
   loading = true;
-  invoice: InvoiceShowInterface = {};
+  invoice: InvoiceShowInterface = {id: ""};
 
   mounted(): void {
     this.fetchInvoice();
