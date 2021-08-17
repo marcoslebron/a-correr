@@ -13,7 +13,7 @@
       .col-md-2
         button.btn.btn-primary(type="submit") Buscar Imagenes
 
-  .row.justify-content-md-center
+  .row.justify-content-md-center.mt-3
     .col-md-6
       SellerProgressBar(
         v-for="sellerCompetitor in sellersPoints" 
