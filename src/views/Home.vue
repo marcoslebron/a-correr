@@ -190,13 +190,12 @@ export default class Home extends Vue {
     await this.fetchClient();
     await this.fetchProduct();
     this.showWinner = true;
-    await this.createInvoice();
   }
 
   @Watch("raceHasEnded", { immediate: true })
   onRaceEnded(val: boolean): void {
     if (val) {
-      this.dispatchAlegraInvoice();
+      this.dispatchAlegraInvoice().then(() => this.createInvoice());
     }
   }
 

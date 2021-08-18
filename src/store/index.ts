@@ -7,7 +7,7 @@ Vue.use(Vuex);
 
 export const state = {
   sellersPoints: [],
-  pointsReward: 3,
+  pointsReward: 10,
   winnerPoints: 20,
 };
 
