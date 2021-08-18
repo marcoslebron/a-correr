@@ -1,7 +1,7 @@
 <template lang="pug">
 .container
   form(@submit.prevent="fetchImages")
-    .row.justify-content-md-center.mt-5
+    .row.justify-content-md-center.mt-5(data-aos="fade-in-top")
       .col-md-6
         .form-group
           input.form-control(
@@ -33,7 +33,7 @@
     SellerImage(
       v-for="seller in sellers" 
       :seller="seller"
-      :key="seller.id")
+      :key="seller.id" data-aos="fade-in")
 
   EmptyMessage(v-if="noImages")
   

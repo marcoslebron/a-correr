@@ -1,9 +1,10 @@
 <template lang="pug">
   .col-md-3
     .image-card
-      img(:src="imageURL" loading=lazy)
+      .img-holder
+        img(:src="seller.image.regular")
       .image-card-foorter.mb-2
-        .image-card-seller {{seller.name}}
+        .image-card-seller.mt-2 {{seller.name}}
         button.btn.btn-sm.btn-primary(v-if="allowLike" @click="addPoints()") Me gusta 😍
 </template>
 
@@ -52,6 +53,11 @@ export default class SellerImage extends Vue {
   img {
     border-radius: 5px;
     width: 100%;
+  }
+  .img-holder {
+    background-size: contain;
+    height: 200px;
+    overflow: hidden;
   }
 }
 </style>
