@@ -1,7 +1,8 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import Home from "../views/Home.vue";
-import Invoice from  "../views/Invoice.vue";
+import Invoice from "../views/Invoice.vue";
+
 Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
