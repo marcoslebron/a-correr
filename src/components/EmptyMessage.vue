@@ -5,7 +5,7 @@
       h4 
         | Aun no has visto las mejores imagenes que tenemos, 
         br/ 
-        | Busca ahora y elige las que mas te gusten
+        | Busca ahora nuestros vendedores tienen las mejores imagenes del mundo.
 </template>
 <style lang="scss">
 .empty-message {
